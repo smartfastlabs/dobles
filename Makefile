@@ -4,7 +4,9 @@ test: clean lint
 
 .PHONY: lint
 lint:
-	@flake8 dobles test
+	@flake8 --extend-ignore E501 dobles test
+	@black . 
+	@isort .
 
 .PHONY: clean
 clean:
