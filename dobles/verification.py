@@ -1,9 +1,11 @@
 import sys
 from inspect import getcallargs, isbuiltin, isfunction, ismethod
 
-from dobles.exceptions import (VerifyingBuiltinDoubleArgumentError,
-                               VerifyingDoubleArgumentError,
-                               VerifyingDoubleError)
+from dobles.exceptions import (
+    VerifyingBuiltinDoubleArgumentError,
+    VerifyingDoubleArgumentError,
+    VerifyingDoubleError,
+)
 
 ACCEPTS_ARGS = (list, tuple, set)
 ACCEPTS_KWARGS = (dict,)

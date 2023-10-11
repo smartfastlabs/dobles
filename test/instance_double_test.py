@@ -1,9 +1,11 @@
 from pytest import raises
 
 from dobles import InstanceDouble, allow, no_builtin_verification
-from dobles.exceptions import (VerifyingDoubleArgumentError,
-                               VerifyingDoubleError,
-                               VerifyingDoubleImportError)
+from dobles.exceptions import (
+    VerifyingDoubleArgumentError,
+    VerifyingDoubleError,
+    VerifyingDoubleImportError,
+)
 
 
 class TestInstanceDouble(object):

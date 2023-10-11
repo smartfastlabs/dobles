@@ -5,8 +5,7 @@ import six
 
 import dobles.lifecycle
 from dobles.call_count_accumulator import CallCountAccumulator
-from dobles.exceptions import (MockExpectationError,
-                               VerifyingBuiltinDoubleArgumentError)
+from dobles.exceptions import MockExpectationError, VerifyingBuiltinDoubleArgumentError
 from dobles.verification import verify_arguments
 
 _any = object()

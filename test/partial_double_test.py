@@ -2,9 +2,11 @@ from pytest import raises
 
 import dobles.testing
 from dobles import allow, no_builtin_verification
-from dobles.exceptions import (UnallowedMethodCallError,
-                               VerifyingDoubleArgumentError,
-                               VerifyingDoubleError)
+from dobles.exceptions import (
+    UnallowedMethodCallError,
+    VerifyingDoubleArgumentError,
+    VerifyingDoubleError,
+)
 from dobles.lifecycle import teardown
 from dobles.testing import User, UserWithCustomNew
 

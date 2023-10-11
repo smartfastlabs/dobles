@@ -26,7 +26,6 @@ jobs:
       - run: |
           flake8 --extend-ignore E501 dobles test
           black . --check
-          isort .
   test:
     needs: linting
     strategy:

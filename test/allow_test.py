@@ -6,8 +6,11 @@ import pytest
 from pytest import raises
 
 from dobles import allow, no_builtin_verification
-from dobles.exceptions import (MockExpectationError, UnallowedMethodCallError,
-                               VerifyingDoubleArgumentError)
+from dobles.exceptions import (
+    MockExpectationError,
+    UnallowedMethodCallError,
+    VerifyingDoubleArgumentError,
+)
 from dobles.instance_double import InstanceDouble
 from dobles.lifecycle import teardown
 from dobles.testing import AlwaysEquals, NeverEquals

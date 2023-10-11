@@ -1,8 +1,7 @@
 import pytest
 
 import dobles.testing
-from dobles import (ClassDouble, InstanceDouble, allow_constructor, patch,
-                    patch_class)
+from dobles import ClassDouble, InstanceDouble, allow_constructor, patch, patch_class
 from dobles.exceptions import VerifyingDoubleError, VerifyingDoubleImportError
 from dobles.lifecycle import teardown
 

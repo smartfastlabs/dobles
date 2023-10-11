@@ -2,8 +2,7 @@ import re
 
 from pytest import raises
 
-from dobles.exceptions import (VerifyingDoubleArgumentError,
-                               VerifyingDoubleError)
+from dobles.exceptions import VerifyingDoubleArgumentError, VerifyingDoubleError
 from dobles.object_double import ObjectDouble
 from dobles.targets.allowance_target import allow
 from dobles.testing import User

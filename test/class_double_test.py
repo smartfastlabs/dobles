@@ -3,10 +3,13 @@ import re
 from pytest import mark, raises
 
 from dobles import ClassDouble, allow, allow_constructor, expect_constructor
-from dobles.exceptions import (ConstructorDoubleError, MockExpectationError,
-                               UnallowedMethodCallError,
-                               VerifyingDoubleArgumentError,
-                               VerifyingDoubleError)
+from dobles.exceptions import (
+    ConstructorDoubleError,
+    MockExpectationError,
+    UnallowedMethodCallError,
+    VerifyingDoubleArgumentError,
+    VerifyingDoubleError,
+)
 from dobles.lifecycle import teardown, verify
 from dobles.testing import EmptyClass, User
 
