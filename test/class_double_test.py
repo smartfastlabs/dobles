@@ -1,5 +1,7 @@
 import re
 
+from pytest import mark, raises
+
 from dobles import ClassDouble, allow, allow_constructor, expect_constructor
 from dobles.exceptions import (ConstructorDoubleError, MockExpectationError,
                                UnallowedMethodCallError,
@@ -7,55 +9,53 @@ from dobles.exceptions import (ConstructorDoubleError, MockExpectationError,
                                VerifyingDoubleError)
 from dobles.lifecycle import teardown, verify
 from dobles.testing import EmptyClass, User
-from pytest import mark, raises
 
 TEST_CLASSES = (
-    'dobles.testing.User',
-    'dobles.testing.EmptyClass',
+    "dobles.testing.User",
+    "dobles.testing.EmptyClass",
 )
 
 VALID_ARGS = {
-    'dobles.testing.User': ('Bob', 100),
-    'dobles.testing.EmptyClass': tuple(),
+    "dobles.testing.User": ("Bob", 100),
+    "dobles.testing.EmptyClass": tuple(),
 }
 
 
 class TestClassDouble(object):
-
     def test_allows_stubs_on_existing_class_methods(self):
-        User = ClassDouble('dobles.testing.User')
+        User = ClassDouble("dobles.testing.User")
 
         allow(User).class_method
 
-        assert User.class_method('arg') is None
+        assert User.class_method("arg") is None
 
     def test_raises_when_stubbing_nonexistent_methods(self):
-        User = ClassDouble('dobles.testing.User')
+        User = ClassDouble("dobles.testing.User")
 
         with raises(VerifyingDoubleError):
             allow(User).non_existent_method
 
     def test_allows_stubs_on_existing_static_methods(self):
-        User = ClassDouble('dobles.testing.User')
+        User = ClassDouble("dobles.testing.User")
 
         allow(User).static_method
 
-        assert User.static_method('arg') is None
+        assert User.static_method("arg") is None
 
     def test_raises_when_stubbing_noncallable_class_attributes(self):
-        User = ClassDouble('dobles.testing.User')
+        User = ClassDouble("dobles.testing.User")
 
         with raises(VerifyingDoubleError):
             allow(User).class_attribute
 
     def test_raises_when_argspec_does_not_match(self):
-        User = ClassDouble('dobles.testing.User')
+        User = ClassDouble("dobles.testing.User")
 
         with raises(Exception):
             allow(User).class_method.with_no_args()
 
     def test_raises_when_stubbing_instance_methods(self):
-        User = ClassDouble('dobles.testing.User')
+        User = ClassDouble("dobles.testing.User")
 
         with raises(VerifyingDoubleError) as e:
             allow(User).instance_method
@@ -64,18 +64,18 @@ class TestClassDouble(object):
 
 
 class TestUsingStubbingConstructor(object):
-
-    @mark.parametrize('test_class', TEST_CLASSES)
+    @mark.parametrize("test_class", TEST_CLASSES)
     class TestUserAndEmptyClass(object):
         """Run test against User and EmptyClass"""
 
         def test_allowing_with_args(self, test_class):
             TestClass = ClassDouble(test_class)
 
-            allow_constructor(TestClass).with_args(
-                *VALID_ARGS[test_class]).and_return('Bob Barker')
+            allow_constructor(TestClass).with_args(*VALID_ARGS[test_class]).and_return(
+                "Bob Barker"
+            )
 
-            assert TestClass(*VALID_ARGS[test_class]) == 'Bob Barker'
+            assert TestClass(*VALID_ARGS[test_class]) == "Bob Barker"
 
         def test_with_no_allowances(self, test_class):
             TestClass = ClassDouble(test_class)
@@ -98,25 +98,24 @@ class TestUsingStubbingConstructor(object):
 
             TestClass(*VALID_ARGS[test_class])
 
-    @mark.parametrize('test_class', TEST_CLASSES[0:2])
+    @mark.parametrize("test_class", TEST_CLASSES[0:2])
     class TestUserOnly(object):
         """Test using the constructor on a class with a custom __init__"""
 
         def test_called_with_wrong_args(self, test_class):
             TestClass = ClassDouble(test_class)
 
-            allow_constructor(TestClass).with_args(
-                *VALID_ARGS[test_class]).and_return('Bob Barker')
+            allow_constructor(TestClass).with_args(*VALID_ARGS[test_class]).and_return(
+                "Bob Barker"
+            )
 
             with raises(Exception):
-                TestClass('Bob', 101)
+                TestClass("Bob", 101)
 
 
 class TestStubbingConstructor(object):
-
-    @mark.parametrize('test_class', TEST_CLASSES)
+    @mark.parametrize("test_class", TEST_CLASSES)
     class TestAllow(object):
-
         def test_with_no_args(self, test_class):
             TestClass = ClassDouble(test_class)
 
@@ -132,14 +131,14 @@ class TestStubbingConstructor(object):
         def test_with_valid_args(self, test_class):
             TestClass = ClassDouble(test_class)
 
-            allow_constructor(TestClass).with_args(
-                *VALID_ARGS[test_class]).and_return('Bob')
+            allow_constructor(TestClass).with_args(*VALID_ARGS[test_class]).and_return(
+                "Bob"
+            )
 
-            assert TestClass(*VALID_ARGS[test_class]) == 'Bob'
+            assert TestClass(*VALID_ARGS[test_class]) == "Bob"
 
-    @mark.parametrize('test_class', TEST_CLASSES)
+    @mark.parametrize("test_class", TEST_CLASSES)
     class TestExpect(object):
-
         def test_with_no_args(self, test_class):
             TestClass = ClassDouble(test_class)
 
@@ -161,9 +160,8 @@ class TestStubbingConstructor(object):
             assert TestClass(*VALID_ARGS[test_class]) is None
 
 
-@mark.parametrize('test_class', [User, EmptyClass])
+@mark.parametrize("test_class", [User, EmptyClass])
 class TestingStubbingNonClassDoubleConstructors(object):
-
     def test_raises_if_you_allow_constructor(self, test_class):
         with raises(ConstructorDoubleError):
             allow_constructor(test_class)
@@ -174,37 +172,34 @@ class TestingStubbingNonClassDoubleConstructors(object):
 
 
 class TestStubbingConstructorOfBuiltinSubClass(object):
-
-    @mark.parametrize('type_', ['Dict'])
+    @mark.parametrize("type_", ["Dict"])
     class TestAcceptsKwargs(object):
-
         def test_fails_with_positional_args(self, type_):
-            double = ClassDouble('dobles.testing.{}SubClass'.format(type_))
+            double = ClassDouble("dobles.testing.{}SubClass".format(type_))
             with raises(VerifyingDoubleArgumentError):
                 allow_constructor(double).with_args(1, 2)
 
         def test_fails_with_positional_args_and_kwargs(self, type_):
-            double = ClassDouble('dobles.testing.{}SubClass'.format(type_))
+            double = ClassDouble("dobles.testing.{}SubClass".format(type_))
             with raises(VerifyingDoubleArgumentError):
                 allow_constructor(double).with_args(1, 2, foo=1)
 
         def test_passes_with_kwargs(self, type_):
-            double = ClassDouble('dobles.testing.{}SubClass'.format(type_))
-            allow_constructor(double).with_args(bob='Barker')
+            double = ClassDouble("dobles.testing.{}SubClass".format(type_))
+            allow_constructor(double).with_args(bob="Barker")
 
-    @mark.parametrize('type_', ['List', 'Set', 'Tuple'])
+    @mark.parametrize("type_", ["List", "Set", "Tuple"])
     class TestAccpectArgs(object):
-
         def test_passes_with_positional_args(self, type_):
-            double = ClassDouble('dobles.testing.{}SubClass'.format(type_))
+            double = ClassDouble("dobles.testing.{}SubClass".format(type_))
             allow_constructor(double).with_args(1, 2)
 
         def test_fails_with_kwargs(self, type_):
-            double = ClassDouble('dobles.testing.{}SubClass'.format(type_))
+            double = ClassDouble("dobles.testing.{}SubClass".format(type_))
             with raises(VerifyingDoubleArgumentError):
-                allow_constructor(double).with_args(bob='Barker')
+                allow_constructor(double).with_args(bob="Barker")
 
         def test_fails_with_positional_args_and_kwargs(self, type_):
-            double = ClassDouble('dobles.testing.{}SubClass'.format(type_))
+            double = ClassDouble("dobles.testing.{}SubClass".format(type_))
             with raises(VerifyingDoubleArgumentError):
                 allow_constructor(double).with_args(1, 2, foo=1)

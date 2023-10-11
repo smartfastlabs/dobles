@@ -23,14 +23,12 @@ def _get_dobles_target(module, class_name, path):
 
         if not isclass(dobles_target):
             raise VerifyingDoubleImportError(
-                'Path does not point to a class: {}.'.format(path)
+                "Path does not point to a class: {}.".format(path)
             )
 
         return dobles_target
     except AttributeError:
-        raise VerifyingDoubleImportError(
-            'No object at path: {}.'.format(path)
-        )
+        raise VerifyingDoubleImportError("No object at path: {}.".format(path))
 
 
 class InstanceDouble(ObjectDouble):

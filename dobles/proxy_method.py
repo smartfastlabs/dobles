@@ -8,7 +8,7 @@ from dobles.proxy_property import ProxyProperty
 
 
 def double_name(name):
-    return 'double_of_' + name
+    return "double_of_" + name
 
 
 def _restore__new__(target, original_method):
@@ -27,6 +27,7 @@ def _restore__new__(target, original_method):
     :param func original_method: The method to set __new__ to
     """
     if isbuiltin(original_method):
+
         @wraps(original_method)
         def _new(cls, *args, **kwargs):
             return original_method(cls)
@@ -85,7 +86,7 @@ class ProxyMethod(object):
         :rtype: object, ProxyMethod
         """
 
-        if self._attr.kind == 'property':
+        if self._attr.kind == "property":
             return self.__call__()
 
         return self
@@ -107,20 +108,22 @@ class ProxyMethod(object):
 
         if self._target.is_class_or_module():
             setattr(self._target.obj, self._method_name, self._original_method)
-            if self._method_name == '__new__' and sys.version_info >= (3, 0):
+            if self._method_name == "__new__" and sys.version_info >= (3, 0):
                 _restore__new__(self._target.obj, self._original_method)
             else:
                 setattr(self._target.obj, self._method_name, self._original_method)
-        elif self._attr.kind == 'property':
-            setattr(self._target.obj.__class__, self._method_name, self._original_method)
+        elif self._attr.kind == "property":
+            setattr(
+                self._target.obj.__class__, self._method_name, self._original_method
+            )
             del self._target.obj.__dict__[double_name(self._method_name)]
-        elif self._attr.kind == 'attribute':
+        elif self._attr.kind == "attribute":
             self._target.obj.__dict__[self._method_name] = self._original_method
         else:
             # TODO: Could there ever have been a value here that needs to be restored?
             del self._target.obj.__dict__[self._method_name]
 
-        if self._method_name in ['__call__', '__enter__', '__exit__']:
+        if self._method_name in ["__call__", "__enter__", "__exit__"]:
             self._target.restore_attr(self._method_name)
 
     def _capture_original_method(self):
@@ -133,7 +136,7 @@ class ProxyMethod(object):
 
         if self._target.is_class_or_module():
             setattr(self._target.obj, self._method_name, self)
-        elif self._attr.kind == 'property':
+        elif self._attr.kind == "property":
             proxy_property = ProxyProperty(
                 double_name(self._method_name),
                 self._original_method,
@@ -143,11 +146,11 @@ class ProxyMethod(object):
         else:
             self._target.obj.__dict__[self._method_name] = self
 
-        if self._method_name in ['__call__', '__enter__', '__exit__']:
+        if self._method_name in ["__call__", "__enter__", "__exit__"]:
             self._target.hijack_attr(self._method_name)
 
     def _raise_exception(self, args, kwargs):
-        """ Raises an ``UnallowedMethodCallError`` with a useful message.
+        """Raises an ``UnallowedMethodCallError`` with a useful message.
 
         :raise: ``UnallowedMethodCallError``
         """
@@ -161,6 +164,6 @@ class ProxyMethod(object):
             error_message.format(
                 self._method_name,
                 self._target.obj,
-                build_argument_repr_string(args, kwargs)
+                build_argument_repr_string(args, kwargs),
             )
         )

@@ -6,6 +6,7 @@ class Patch(object):
     """
     A wrapper around an object that has been ``patched``
     """
+
     def __init__(self, target):
         """
         :param str path: The absolute module path to the class.

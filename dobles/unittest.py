@@ -14,10 +14,12 @@ def wrap_test(test_func):
 
 
 class TestCase(unittest.TestCase):
-    def __init__(self, methodName='runTest'):
+    def __init__(self, methodName="runTest"):
         super(TestCase, self).__init__(methodName)
 
-        setattr(self, self._testMethodName, wrap_test(getattr(self, self._testMethodName)))
+        setattr(
+            self, self._testMethodName, wrap_test(getattr(self, self._testMethodName))
+        )
 
     def setUp(self):
         self.addCleanup(teardown)

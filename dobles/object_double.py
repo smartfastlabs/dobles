@@ -8,6 +8,7 @@ class ObjectDouble(object):
 
     :param object target: The object the newly created ObjectDouble will verify against.
     """
+
     is_class = False
 
     def __init__(self, target):
@@ -25,8 +26,6 @@ class ObjectDouble(object):
         address = hex(id(self))
         class_name = self.__class__.__name__
 
-        return '<{} of {!r} object at {}>'.format(
-            class_name,
-            self._dobles_target,
-            address
+        return "<{} of {!r} object at {}>".format(
+            class_name, self._dobles_target, address
         )

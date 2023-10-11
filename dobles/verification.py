@@ -1,20 +1,21 @@
 import sys
-from inspect import isbuiltin, getcallargs, isfunction, ismethod
+from inspect import getcallargs, isbuiltin, isfunction, ismethod
 
-from dobles.exceptions import (
-    VerifyingDoubleArgumentError,
-    VerifyingBuiltinDoubleArgumentError,
-    VerifyingDoubleError,
-)
+from dobles.exceptions import (VerifyingBuiltinDoubleArgumentError,
+                               VerifyingDoubleArgumentError,
+                               VerifyingDoubleError)
 
 ACCEPTS_ARGS = (list, tuple, set)
 ACCEPTS_KWARGS = (dict,)
 
 
 if sys.version_info >= (3, 0):
+
     def _get_func_object(func):
         return func.__func__
+
 else:
+
     def _get_func_object(func):
         return func.im_func
 
@@ -28,7 +29,7 @@ def _is_python_function(func):
 def is_callable(obj):
     if isfunction(obj):
         return True
-    return hasattr(obj, '__call__')
+    return hasattr(obj, "__call__")
 
 
 def _is_python_33():
@@ -52,7 +53,7 @@ def _verify_arguments_of_dobles__new__(target, args, kwargs):
         elif args or kwargs:
             given_args_count = 1 + len(args) + len(kwargs)
             raise VerifyingDoubleArgumentError(
-                '__init__() takes exactly 1 arguments ({} given)'.format(
+                "__init__() takes exactly 1 arguments ({} given)".format(
                     given_args_count,
                 )
             )
@@ -60,8 +61,8 @@ def _verify_arguments_of_dobles__new__(target, args, kwargs):
 
     return _verify_arguments(
         target.doubled_obj.__init__,
-        '__init__',
-        ['self'] + list(args),
+        "__init__",
+        ["self"] + list(args),
         kwargs,
     )
 
@@ -87,10 +88,14 @@ def verify_method(target, method_name, class_level=False):
     if not attr:
         raise VerifyingDoubleError(method_name, target.doubled_obj).no_matching_method()
 
-    if attr.kind == 'data' and not isbuiltin(attr.object) and not is_callable(attr.object):
+    if (
+        attr.kind == "data"
+        and not isbuiltin(attr.object)
+        and not is_callable(attr.object)
+    ):
         raise VerifyingDoubleError(method_name, target.doubled_obj).not_callable()
 
-    if class_level and attr.kind == 'method' and method_name != '__new__':
+    if class_level and attr.kind == "method" and method_name != "__new__":
         raise VerifyingDoubleError(method_name, target.doubled_obj).requires_instance()
 
 
@@ -104,23 +109,23 @@ def verify_arguments(target, method_name, args, kwargs):
     :raise: ``VerifyingDoubleError`` if the provided arguments do not match the signature.
     """
 
-    if method_name == '_dobles__new__':
+    if method_name == "_dobles__new__":
         return _verify_arguments_of_dobles__new__(target, args, kwargs)
 
     attr = target.get_attr(method_name)
     method = attr.object
 
-    if attr.kind in ('data', 'attribute', 'toplevel', 'class method', 'static method'):
+    if attr.kind in ("data", "attribute", "toplevel", "class method", "static method"):
         try:
             method = method.__get__(None, attr.defining_class)
         except AttributeError:
             method = method.__call__
-    elif attr.kind == 'property':
+    elif attr.kind == "property":
         if args or kwargs:
             raise VerifyingDoubleArgumentError("Properties do not accept arguments.")
         return
     else:
-        args = ['self_or_cls'] + list(args)
+        args = ["self_or_cls"] + list(args)
 
     _verify_arguments(method, method_name, args, kwargs)
 

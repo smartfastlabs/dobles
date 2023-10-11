@@ -1,11 +1,12 @@
 from threading import Thread
+
 try:
     from Queue import Queue
 except ImportError:
     from queue import Queue
 
-from dobles import lifecycle, expect, allow, clear
 import dobles.testing
+from dobles import allow, clear, expect, lifecycle
 
 
 class TestLifecycle(object):
@@ -28,33 +29,34 @@ class TestLifecycle(object):
 
 
 class TestClear(object):
-
     def test_does_not_raise_expectation_errors(self):
         expect(dobles.testing).top_level_function
         clear(dobles.testing)
 
     def test_new_allowances_can_be_set(self):
-        (allow(dobles.testing).
-            top_level_function.
-            with_args('Bob Barker').
-            and_return('Drew Carey'))
+        (
+            allow(dobles.testing)
+            .top_level_function.with_args("Bob Barker")
+            .and_return("Drew Carey")
+        )
 
         clear(dobles.testing)
-        allow(dobles.testing).top_level_function.and_return('Bob Barker')
+        allow(dobles.testing).top_level_function.and_return("Bob Barker")
 
-        assert dobles.testing.top_level_function('bar') == 'Bob Barker'
+        assert dobles.testing.top_level_function("bar") == "Bob Barker"
 
     def test_clearing_an_instance(self):
-        user = dobles.testing.User('Bob Barker', 25)
-        (allow(user).
-            method_with_positional_arguments.
-            with_args(25).
-            and_return('The price is right'))
+        user = dobles.testing.User("Bob Barker", 25)
+        (
+            allow(user)
+            .method_with_positional_arguments.with_args(25)
+            .and_return("The price is right")
+        )
 
         clear(user)
-        allow(user).method_with_positional_arguments.and_return('The price is wrong')
+        allow(user).method_with_positional_arguments.and_return("The price is wrong")
 
-        assert user.method_with_positional_arguments(10) == 'The price is wrong'
+        assert user.method_with_positional_arguments(10) == "The price is wrong"
 
     def test_calling_twice(self):
         expect(dobles.testing).top_level_function
@@ -64,5 +66,5 @@ class TestClear(object):
     def test_calling_on_an_undoubled_object(self):
         clear(dobles.testing)
 
-        result = dobles.testing.top_level_function('bob')
-        assert result == 'bob -- default'
+        result = dobles.testing.top_level_function("bob")
+        assert result == "bob -- default"

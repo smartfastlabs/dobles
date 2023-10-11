@@ -34,7 +34,9 @@ def allow_constructor(target):
     """
     if not isinstance(target, ClassDouble):
         raise ConstructorDoubleError(
-            'Cannot allow_constructor of {} since it is not a ClassDouble.'.format(target),
+            "Cannot allow_constructor of {} since it is not a ClassDouble.".format(
+                target
+            ),
         )
 
     return allow(target)._dobles__new__
@@ -60,7 +62,7 @@ class AllowanceTarget(object):
         :rtype: object, Allowance
         """
 
-        __dict__ = object.__getattribute__(self, '__dict__')
+        __dict__ = object.__getattribute__(self, "__dict__")
 
         if __dict__ and attr_name in __dict__:
             return __dict__[attr_name]

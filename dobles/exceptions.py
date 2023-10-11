@@ -32,12 +32,16 @@ class VerifyingDoubleError(AssertionError):
         return self
 
     def not_callable(self):
-        self.message = "Cannot double method '{}' because it is not a callable attribute on {}."
+        self.message = (
+            "Cannot double method '{}' because it is not a callable attribute on {}."
+        )
 
         return self
 
     def requires_instance(self):
-        self.message = "Cannot double method '{}' because it is not callable directly on {}."
+        self.message = (
+            "Cannot double method '{}' because it is not callable directly on {}."
+        )
 
         return self
 

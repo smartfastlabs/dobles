@@ -24,7 +24,7 @@ class MethodDouble(object):
         self._proxy_method = ProxyMethod(
             target,
             method_name,
-            lambda args, kwargs: self._find_matching_double(args, kwargs)
+            lambda args, kwargs: self._find_matching_double(args, kwargs),
         )
 
     def add_allowance(self, caller):

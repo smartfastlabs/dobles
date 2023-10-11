@@ -13,7 +13,7 @@ from dobles.unittest import TestCase
 def test_unittest_integration():
     class UnittestIntegration(TestCase):
         def runTest(self):
-            subject = InstanceDouble('dobles.testing.User')
+            subject = InstanceDouble("dobles.testing.User")
 
             expect(subject).instance_method
 
@@ -24,4 +24,4 @@ def test_unittest_integration():
     result = runner.run(suite)
 
     assert len(result.failures) == 1
-    assert 'MockExpectationError' in stream.getvalue()
+    assert "MockExpectationError" in stream.getvalue()

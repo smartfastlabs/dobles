@@ -10,6 +10,7 @@ def patch_class(input_class):
     :param class input_class:  The class to patch.
     :rtype class:
     """
+
     class Instantiator(object):
         @classmethod
         def _dobles__new__(self, *args, **kwargs):
@@ -45,7 +46,7 @@ class ClassDouble(InstanceDouble):
         :raises VerifyingDoubleArgumentError: If args/kwargs don't match the expected arguments of
             __init__ of the underlying class.
         """
-        verify_arguments(self._target, '_dobles__new__', args, kwargs)
+        verify_arguments(self._target, "_dobles__new__", args, kwargs)
         return self._dobles__new__(*args, **kwargs)
 
     def _dobles__new__(self, *args, **kwargs):
@@ -53,4 +54,6 @@ class ClassDouble(InstanceDouble):
 
         NOTE: This method is here only to raise if it has not been stubbed
         """
-        raise UnallowedMethodCallError('Cannot call __new__ on a ClassDouble without stubbing it')
+        raise UnallowedMethodCallError(
+            "Cannot call __new__ on a ClassDouble without stubbing it"
+        )

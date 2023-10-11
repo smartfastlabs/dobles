@@ -74,7 +74,7 @@ class Expectation(Allowance):
         :raise: ``MockExpectationError``
         """
 
-        super(Expectation, self).raise_failure_exception('Expected')
+        super(Expectation, self).raise_failure_exception("Expected")
 
     def is_satisfied(self):
         """
@@ -87,4 +87,5 @@ class Expectation(Allowance):
         """
 
         return self._call_counter.has_correct_call_count() and (
-            self._call_counter.never() or self._is_satisfied)
+            self._call_counter.never() or self._is_satisfied
+        )
