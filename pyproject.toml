@@ -38,6 +38,9 @@ python = ">=3.9,<4.0"
 [tool.poetry.group.test.dependencies]
 pytest = "*"
 
+[tool.poetry.group.docs]
+optional = true
+
 [tool.poetry.group.docs.dependencies]
 coverage = "*"
 coveralls = "*"
