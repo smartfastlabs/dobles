@@ -1,5 +1,3 @@
-import pytest
-
 pytest_plugins = "pytester"
 
 
@@ -38,7 +36,6 @@ def test_failed_expections_do_not_leak_between_tests(pytester):
     """
     )
     result = pytester.runpytest()
-    outcomes = result.parseoutcomes()
     result.assert_outcomes(failed=2)
     expected_error = (
         "*Expected 'class_method' to be called 1 time instead of 0 times on"
