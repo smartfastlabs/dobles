@@ -62,5 +62,5 @@ max-complexity = 10
 addopts = "--tb native --assert plain"
 
 
-[options.entry_points]
-pytest11 = "dobles = dobles.pytest_plugin"
+[tool.poetry.plugins.pytest11]
+dobles = "dobles.pytest_plugin"

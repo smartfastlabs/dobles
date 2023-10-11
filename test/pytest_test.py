@@ -1,10 +1,11 @@
+import pytest
+
 pytest_plugins = "pytester"
 
 
-def test_exceptions_dont_cause_leaking_between_tests(testdir, capsys):
-    testdir.makepyfile(
+def test_exceptions_dont_cause_leaking_between_tests(pytester):
+    pytester.makepyfile(
         """
-
         from dobles.targets.expectation_target import expect
         from dobles.testing import User
 
@@ -17,14 +18,12 @@ def test_exceptions_dont_cause_leaking_between_tests(testdir, capsys):
 
     """
     )
-    result = testdir.runpytest()
-    outcomes = result.parseoutcomes()
-    assert outcomes["failed"] == 1
-    assert outcomes["passed"] == 1
+    result = pytester.runpytest()
+    result.assert_outcomes(passed=1, failed=1)
 
 
-def test_failed_expections_do_not_leak_between_tests(testdir, capsys):
-    testdir.makepyfile(
+def test_failed_expections_do_not_leak_between_tests(pytester):
+    pytester.makepyfile(
         """
 
         from dobles.targets.expectation_target import expect
@@ -38,9 +37,9 @@ def test_failed_expections_do_not_leak_between_tests(testdir, capsys):
 
     """
     )
-    result = testdir.runpytest()
+    result = pytester.runpytest()
     outcomes = result.parseoutcomes()
-    assert outcomes["failed"] == 2
+    result.assert_outcomes(failed=2)
     expected_error = (
         "*Expected 'class_method' to be called 1 time instead of 0 times on"
         " <class 'dobles.testing.User'> with ('{arg_value}')*"
