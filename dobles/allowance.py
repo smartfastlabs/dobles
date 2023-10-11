@@ -3,8 +3,7 @@ import inspect
 
 import dobles.lifecycle
 from dobles.call_count_accumulator import CallCountAccumulator
-from dobles.exceptions import (MockExpectationError,
-                               VerifyingBuiltinDoubleArgumentError)
+from dobles.exceptions import MockExpectationError, VerifyingBuiltinDoubleArgumentError
 from dobles.verification import verify_arguments
 
 _any = object()
@@ -24,12 +23,10 @@ def _get_future():
 
 
 def verify_count_is_non_negative(func):
-
     @functools.wraps(func)
     def inner(self, arg):
         if arg < 0:
-            raise TypeError(func.__name__ +
-                            " requires one positive integer argument")
+            raise TypeError(func.__name__ + " requires one positive integer argument")
         return func(self, arg)
 
     return inner
@@ -37,8 +34,7 @@ def verify_count_is_non_negative(func):
 
 def check_func_takes_args(func):
     arg_spec = inspect.getfullargspec(func)
-    return any(
-        [arg_spec.args, arg_spec.varargs, arg_spec.varkw, arg_spec.defaults])
+    return any([arg_spec.args, arg_spec.varargs, arg_spec.varkw, arg_spec.defaults])
 
 
 def build_argument_repr_string(args, kwargs):
@@ -121,8 +117,9 @@ class Allowance(object):
         return_values = list(return_values)
         final_value = return_values.pop()
 
-        self.and_return_result_of(lambda: return_values.pop(0)
-                                  if return_values else final_value)
+        self.and_return_result_of(
+            lambda: return_values.pop(0) if return_values else final_value
+        )
         return self
 
     def and_return_result_of(self, return_value):
@@ -338,8 +335,7 @@ class Allowance(object):
         """
 
         raise MockExpectationError(
-            "{} '{}' to be called {}on {!r} with {}, but was not. ({}:{})".
-            format(
+            "{} '{}' to be called {}on {!r} with {}, but was not. ({}:{})".format(
                 expect_or_allow,
                 self._method_name,
                 self._call_counter.error_string(),
@@ -347,7 +343,8 @@ class Allowance(object):
                 self._expected_argument_string(),
                 self._caller.filename,
                 self._caller.lineno,
-            ))
+            )
+        )
 
     def _expected_argument_string(self):
         """Generates a string describing what arguments the double expected.
