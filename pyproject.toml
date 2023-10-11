@@ -34,8 +34,8 @@ packages = [
 [tool.poetry.dependencies]
 python = ">=3.9,<4.0"
 
-[tool.poetry.group.test]
-optional = true
+# [tool.poetry.group.test]
+# optional = true
 
 [tool.poetry.group.test.dependencies]
 pytest = "*"
