@@ -1,6 +1,6 @@
 from importlib import import_module
 
-from doubles.exceptions import VerifyingDoubleImportError
+from dobles.exceptions import VerifyingDoubleImportError
 
 
 def get_module(module_path, full_path):
@@ -16,7 +16,9 @@ def get_module(module_path, full_path):
     try:
         return import_module(module_path)
     except ImportError:
-        raise VerifyingDoubleImportError('Cannot import object from path: {}.'.format(full_path))
+        raise VerifyingDoubleImportError(
+            "Cannot import object from path: {}.".format(full_path)
+        )
 
 
 def get_path_components(path):
@@ -28,11 +30,11 @@ def get_path_components(path):
     :raise: ``VerifyingDoubleImportError`` if the path is to a top-level module.
     """
 
-    path_segments = path.split('.')
-    module_path = '.'.join(path_segments[:-1])
+    path_segments = path.split(".")
+    module_path = ".".join(path_segments[:-1])
 
-    if module_path == '':
-        raise VerifyingDoubleImportError('Invalid import path: {}.'.format(path))
+    if module_path == "":
+        raise VerifyingDoubleImportError("Invalid import path: {}.".format(path))
 
     class_name = path_segments[-1]
 

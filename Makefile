@@ -1,10 +1,11 @@
 .PHONY: test
 test: clean lint
-	@py.test -s -p no:doubles test
+	@py.test -s -p no:dobles test
 
 .PHONY: lint
 lint:
-	@flake8 doubles test
+	@flake8 --extend-ignore E501 dobles test
+	@black . 
 
 .PHONY: clean
 clean:
@@ -12,8 +13,9 @@ clean:
 
 .PHONY: bootstrap
 bootstrap:
-	@pip install -r requirements-dev.txt
-	@pip install -e .
+	@pip install poetry 
+	@poetry install --with lint,test,docs
+	@poetry shell
 
 .PHONY: docs
 docs:

@@ -1,7 +1,7 @@
-from doubles.allowance import Allowance
-from doubles.expectation import Expectation
-from doubles.proxy_method import ProxyMethod
-from doubles.verification import verify_method
+from dobles.allowance import Allowance
+from dobles.expectation import Expectation
+from dobles.proxy_method import ProxyMethod
+from dobles.verification import verify_method
 
 
 class MethodDouble(object):
@@ -24,7 +24,7 @@ class MethodDouble(object):
         self._proxy_method = ProxyMethod(
             target,
             method_name,
-            lambda args, kwargs: self._find_matching_double(args, kwargs)
+            lambda args, kwargs: self._find_matching_double(args, kwargs),
         )
 
     def add_allowance(self, caller):

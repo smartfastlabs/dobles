@@ -1,7 +1,7 @@
 from contextlib import contextmanager
 from threading import local
 
-from doubles.space import Space
+from dobles.space import Space
 
 _thread_local_data = local()
 
@@ -13,15 +13,15 @@ def current_space():
     :rtype: Space
     """
 
-    if not hasattr(_thread_local_data, 'current_space'):
+    if not hasattr(_thread_local_data, "current_space"):
         _thread_local_data.current_space = Space()
 
     return _thread_local_data.current_space
 
 
 def teardown():
-    """Tears down the current Doubles environment. Must be called after each test case."""
-    if hasattr(_thread_local_data, 'current_space'):
+    """Tears down the current dobles environment. Must be called after each test case."""
+    if hasattr(_thread_local_data, "current_space"):
         _thread_local_data.current_space.teardown()
         del _thread_local_data.current_space
 
@@ -32,7 +32,7 @@ def clear(*objects_to_clear):
     :param object objects_to_clear: The objects to remove allowances and
     expectations from.
     """
-    if not hasattr(_thread_local_data, 'current_space'):
+    if not hasattr(_thread_local_data, "current_space"):
         return
 
     space = current_space()
@@ -47,7 +47,7 @@ def verify():
     test case, but before teardown.
     """
 
-    if hasattr(_thread_local_data, 'current_space'):
+    if hasattr(_thread_local_data, "current_space"):
         _thread_local_data.current_space.verify()
 
 

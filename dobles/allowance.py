@@ -1,12 +1,10 @@
 import functools
 import inspect
 
-import six
-
-from doubles.call_count_accumulator import CallCountAccumulator
-from doubles.exceptions import MockExpectationError, VerifyingBuiltinDoubleArgumentError
-import doubles.lifecycle
-from doubles.verification import verify_arguments
+import dobles.lifecycle
+from dobles.call_count_accumulator import CallCountAccumulator
+from dobles.exceptions import MockExpectationError, VerifyingBuiltinDoubleArgumentError
+from dobles.verification import verify_arguments
 
 _any = object()
 
@@ -19,7 +17,7 @@ def _get_future():
             from tornado.concurrent import Future
         except ImportError:
             raise ImportError(
-                'Error Importing Future, Could not find concurrent.futures or tornado.concurrent',
+                "Error Importing Future, Could not find concurrent.futures or tornado.concurrent",
             )
     return Future()
 
@@ -28,24 +26,21 @@ def verify_count_is_non_negative(func):
     @functools.wraps(func)
     def inner(self, arg):
         if arg < 0:
-            raise TypeError(func.__name__ + ' requires one positive integer argument')
+            raise TypeError(func.__name__ + " requires one positive integer argument")
         return func(self, arg)
+
     return inner
 
 
 def check_func_takes_args(func):
-    if six.PY3:
-        arg_spec = inspect.getfullargspec(func)
-        return any([arg_spec.args, arg_spec.varargs, arg_spec.varkw, arg_spec.defaults])
-    else:
-        arg_spec = inspect.getargspec(func)
-        return any([arg_spec.args, arg_spec.varargs, arg_spec.keywords, arg_spec.defaults])
+    arg_spec = inspect.getfullargspec(func)
+    return any([arg_spec.args, arg_spec.varargs, arg_spec.varkw, arg_spec.defaults])
 
 
 def build_argument_repr_string(args, kwargs):
     args = [repr(x) for x in args]
-    kwargs = ['{}={!r}'.format(k, v) for k, v in kwargs.items()]
-    return '({})'.format(', '.join(args + kwargs))
+    kwargs = ["{}={!r}".format(k, v) for k, v in kwargs.items()]
+    return "({})".format(", ".join(args + kwargs))
 
 
 class Allowance(object):
@@ -76,6 +71,7 @@ class Allowance(object):
 
         :param Exception exception: The exception to raise.
         """
+
         def proxy_exception(*proxy_args, **proxy_kwargs):
             raise exception
 
@@ -116,7 +112,7 @@ class Allowance(object):
         """
 
         if not return_values:
-            raise TypeError('and_return() expected at least 1 return value')
+            raise TypeError("and_return() expected at least 1 return value")
 
         return_values = list(return_values)
         final_value = return_values.pop()
@@ -127,7 +123,7 @@ class Allowance(object):
         return self
 
     def and_return_result_of(self, return_value):
-        """ Causes the double to return the result of calling the provided value.
+        """Causes the double to return the result of calling the provided value.
 
         :param return_value: A callable that will be invoked to determine the double's return value.
         :type return_value: any callable object
@@ -266,7 +262,7 @@ class Allowance(object):
         try:
             verify_arguments(self._target, self._method_name, args, kwargs)
         except VerifyingBuiltinDoubleArgumentError:
-            if doubles.lifecycle.ignore_builtin_verification():
+            if dobles.lifecycle.ignore_builtin_verification():
                 raise
 
     @verify_count_is_non_negative
@@ -320,6 +316,7 @@ class Allowance(object):
     @property
     def times(self):
         return self
+
     time = times
 
     def _called(self):
@@ -331,7 +328,7 @@ class Allowance(object):
         if self._call_counter.called().has_too_many_calls():
             self.raise_failure_exception()
 
-    def raise_failure_exception(self, expect_or_allow='Allowed'):
+    def raise_failure_exception(self, expect_or_allow="Allowed"):
         """Raises a ``MockExpectationError`` with a useful message.
 
         :raise: ``MockExpectationError``
@@ -357,7 +354,7 @@ class Allowance(object):
         """
 
         if self.args is _any and self.kwargs is _any:
-            return 'any args'
+            return "any args"
         elif self._custom_matcher:
             return "custom matcher: '{}'".format(self._custom_matcher.__name__)
         else:

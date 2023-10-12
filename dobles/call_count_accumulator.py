@@ -1,5 +1,5 @@
 def pluralize(word, count):
-    return word if count == 1 else word + 's'
+    return word if count == 1 else word + "s"
 
 
 class CallCountAccumulator(object):
@@ -100,7 +100,7 @@ class CallCountAccumulator(object):
         :rtype boolean
         """
 
-        return getattr(self, '_minimum', None) is not None
+        return getattr(self, "_minimum", None) is not None
 
     @property
     def has_maximum(self):
@@ -109,7 +109,7 @@ class CallCountAccumulator(object):
         :rtype boolean
         """
 
-        return getattr(self, '_maximum', None) is not None
+        return getattr(self, "_maximum", None) is not None
 
     @property
     def has_exact(self):
@@ -118,7 +118,7 @@ class CallCountAccumulator(object):
         :rtype boolean
         """
 
-        return getattr(self, '_exact', None) is not None
+        return getattr(self, "_exact", None) is not None
 
     def _restriction_string(self):
         """Get a string explaining the expectation currently set
@@ -129,19 +129,16 @@ class CallCountAccumulator(object):
         """
 
         if self.has_minimum:
-            string = 'at least '
+            string = "at least "
             value = self._minimum
         elif self.has_maximum:
-            string = 'at most '
+            string = "at most "
             value = self._maximum
         elif self.has_exact:
-            string = ''
+            string = ""
             value = self._exact
 
-        return (string + '{} {}').format(
-            value,
-            pluralize('time', value)
-        )
+        return (string + "{} {}").format(value, pluralize("time", value))
 
     def error_string(self):
         """Returns a well formed error message
@@ -152,10 +149,8 @@ class CallCountAccumulator(object):
         """
 
         if self.has_correct_call_count():
-            return ''
+            return ""
 
-        return '{} instead of {} {} '.format(
-            self._restriction_string(),
-            self.count,
-            pluralize('time', self.count)
+        return "{} instead of {} {} ".format(
+            self._restriction_string(), self.count, pluralize("time", self.count)
         )

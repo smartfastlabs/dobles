@@ -1,11 +1,9 @@
-from __future__ import print_function
-
 from coverage import coverage
 
-cov = coverage(source=('doubles',))
+cov = coverage(source=("dobles",))
 cov.start()
 
-pytest_plugins = ['doubles.pytest_plugin']
+pytest_plugins = ["dobles.pytest_plugin"]
 
 
 def pytest_sessionfinish(session, exitstatus):
