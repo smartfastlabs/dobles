@@ -5,11 +5,7 @@ ENV APP_DIR dobles
 
 WORKDIR $APP_DIR
 
-RUN apt-get update && apt-get install -y gcc 
-
-RUN pip install pytest
-RUN pip install coverage 
+RUN apt-get update && apt-get install -y gcc  && apt-get install -y make
 
 COPY . .
-RUN pip install .
 

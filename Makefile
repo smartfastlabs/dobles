@@ -13,8 +13,9 @@ clean:
 
 .PHONY: bootstrap
 bootstrap:
-	@pip install -r requirements-dev.txt
-	@pip install -e .
+	@pip install poetry 
+	@poetry install --with lint,test,docs
+	@poetry shell
 
 .PHONY: docs
 docs:
