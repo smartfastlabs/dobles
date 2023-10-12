@@ -1,6 +1,8 @@
 dobles
 =======
 
+**Fork of https://www.github.com/uber/doubles with support for python 3.8+**
+
 .. image:: https://badge.fury.io/py/dobles.svg
     :target: http://badge.fury.io/py/dobles
 
@@ -13,8 +15,7 @@ dobles
 .. image:: https://coveralls.io/repos/github/smartfastlabs/dobles/badge.svg?branch=master
     :target: https://coveralls.io/github/smartfastlabs/dobles?branch=master
 
-
-**dobles** is a Python package that provides test doubles for use in automated tests. (Fork of https://github.com/uber/doubles with support for python 3.8+)
+**dobles** is a Python package that provides test doubles for use in automated tests. 
 
 It provides functionality for stubbing, mocking, and verification of test doubles against the real objects they double.
 In contrast to the Mock package, it provides a clear, expressive syntax and better safety guarantees to prevent API
