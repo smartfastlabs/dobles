@@ -1,8 +1,10 @@
 from inspect import isbuiltin, isfunction, ismethod, signature
 
-from dobles.exceptions import (VerifyingBuiltinDoubleArgumentError,
-                               VerifyingDoubleArgumentError,
-                               VerifyingDoubleError)
+from dobles.exceptions import (
+    VerifyingBuiltinDoubleArgumentError,
+    VerifyingDoubleArgumentError,
+    VerifyingDoubleError,
+)
 
 ACCEPTS_ARGS = (list, tuple, set)
 ACCEPTS_KWARGS = (dict,)
