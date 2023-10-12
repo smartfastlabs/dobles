@@ -1,4 +1,4 @@
-FROM python:3.9-slim-bullseye
+FROM python:3.11-slim-bullseye
 
 # Create folder system for all the code to go
 ENV APP_DIR dobles

@@ -1,30 +1,18 @@
-import sys
-from inspect import getcallargs, isbuiltin, isfunction, ismethod
+from inspect import isbuiltin, isfunction, ismethod, signature
 
-from dobles.exceptions import (
-    VerifyingBuiltinDoubleArgumentError,
-    VerifyingDoubleArgumentError,
-    VerifyingDoubleError,
-)
+from dobles.exceptions import (VerifyingBuiltinDoubleArgumentError,
+                               VerifyingDoubleArgumentError,
+                               VerifyingDoubleError)
 
 ACCEPTS_ARGS = (list, tuple, set)
 ACCEPTS_KWARGS = (dict,)
 
-
-if sys.version_info >= (3, 0):
-
-    def _get_func_object(func):
-        return func.__func__
-
-else:
-
-    def _get_func_object(func):
-        return func.im_func
+SELF_OR_CLASS = "SELF_OR_CLASS"
 
 
 def _is_python_function(func):
     if ismethod(func):
-        func = _get_func_object(func)
+        func = func.__func__
     return isfunction(func)
 
 
@@ -32,11 +20,6 @@ def is_callable(obj):
     if isfunction(obj):
         return True
     return hasattr(obj, "__call__")
-
-
-def _is_python_33():
-    v = sys.version_info
-    return v[0] == 3 and v[1] == 3
 
 
 def _verify_arguments_of_dobles__new__(target, args, kwargs):
@@ -64,7 +47,7 @@ def _verify_arguments_of_dobles__new__(target, args, kwargs):
     return _verify_arguments(
         target.doubled_obj.__init__,
         "__init__",
-        ["self"] + list(args),
+        [SELF_OR_CLASS] + list(args),
         kwargs,
     )
 
@@ -120,6 +103,17 @@ def verify_arguments(target, method_name, args, kwargs):
     if attr.kind in ("data", "attribute", "toplevel", "class method", "static method"):
         try:
             method = method.__get__(None, attr.defining_class)
+            if SELF_OR_CLASS not in args:
+                # TODO: This seems like a hack
+                # Something changed between python 3.9 and 3.10 with how bind handles self/cls
+                try:
+                    sig = signature(method)
+                    if len(sig.parameters) != len(args) and (
+                        "cls" in sig.parameters or "self" in sig.parameters
+                    ):
+                        args = [SELF_OR_CLASS] + list(args)
+                except ValueError as e:
+                    raise VerifyingBuiltinDoubleArgumentError(str(e))
         except AttributeError:
             method = method.__call__
     elif attr.kind == "property":
@@ -127,20 +121,15 @@ def verify_arguments(target, method_name, args, kwargs):
             raise VerifyingDoubleArgumentError("Properties do not accept arguments.")
         return
     else:
-        args = ["self_or_cls"] + list(args)
+        args = [SELF_OR_CLASS] + list(args)
 
     _verify_arguments(method, method_name, args, kwargs)
 
 
 def _verify_arguments(method, method_name, args, kwargs):
     try:
-        getcallargs(method, *args, **kwargs)
+        signature(method).bind(*args, **kwargs)
+    except ValueError as e:
+        raise VerifyingBuiltinDoubleArgumentError(str(e))
     except TypeError as e:
-        if not _is_python_function(method):
-            raise VerifyingBuiltinDoubleArgumentError(str(e))
         raise VerifyingDoubleArgumentError(str(e))
-    except IndexError as e:
-        if _is_python_33():
-            _raise_dobles_error_from_index_error(method_name)
-        else:
-            raise e

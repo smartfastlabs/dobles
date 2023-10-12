@@ -1,4 +1,3 @@
-import sys
 from functools import wraps
 from inspect import isbuiltin
 
@@ -108,7 +107,7 @@ class ProxyMethod(object):
 
         if self._target.is_class_or_module():
             setattr(self._target.obj, self._method_name, self._original_method)
-            if self._method_name == "__new__" and sys.version_info >= (3, 0):
+            if self._method_name == "__new__":
                 _restore__new__(self._target.obj, self._original_method)
             else:
                 setattr(self._target.obj, self._method_name, self._original_method)
