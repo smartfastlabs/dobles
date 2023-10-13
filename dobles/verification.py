@@ -1,13 +1,11 @@
 from inspect import isbuiltin, isfunction, ismethod, signature
 
-from dobles.exceptions import (
-    VerifyingBuiltinDoubleArgumentError,
-    VerifyingDoubleArgumentError,
-    VerifyingDoubleError,
-)
+from dobles.exceptions import (VerifyingBuiltinDoubleArgumentError,
+                               VerifyingDoubleArgumentError,
+                               VerifyingDoubleError)
 
 ACCEPTS_ARGS = (list, tuple, set)
-ACCEPTS_KWARGS = (dict,)
+ACCEPTS_KWARGS = (dict, )
 
 SELF_OR_CLASS = "SELF_OR_CLASS"
 
@@ -41,9 +39,7 @@ def _verify_arguments_of_dobles__new__(target, args, kwargs):
             given_args_count = 1 + len(args) + len(kwargs)
             raise VerifyingDoubleArgumentError(
                 "__init__() takes exactly 1 arguments ({} given)".format(
-                    given_args_count,
-                )
-            )
+                    given_args_count, ))
         return
 
     return _verify_arguments(
@@ -57,8 +53,7 @@ def _verify_arguments_of_dobles__new__(target, args, kwargs):
 def _raise_dobles_error_from_index_error(method_name):
     # Work Around for http://bugs.python.org/issue20817
     raise VerifyingDoubleArgumentError(
-        "{method}() missing 3 or more arguments.".format(method=method_name)
-    )
+        "{method}() missing 3 or more arguments.".format(method=method_name))
 
 
 def verify_method(target, method_name, class_level=False):
@@ -73,17 +68,17 @@ def verify_method(target, method_name, class_level=False):
     attr = target.get_attr(method_name)
 
     if not attr:
-        raise VerifyingDoubleError(method_name, target.doubled_obj).no_matching_method()
+        raise VerifyingDoubleError(method_name,
+                                   target.doubled_obj).no_matching_method()
 
-    if (
-        attr.kind == "data"
-        and not isbuiltin(attr.object)
-        and not is_callable(attr.object)
-    ):
-        raise VerifyingDoubleError(method_name, target.doubled_obj).not_callable()
+    if (attr.kind == "data" and not isbuiltin(attr.object)
+            and not is_callable(attr.object)):
+        raise VerifyingDoubleError(method_name,
+                                   target.doubled_obj).not_callable()
 
     if class_level and attr.kind == "method" and method_name != "__new__":
-        raise VerifyingDoubleError(method_name, target.doubled_obj).requires_instance()
+        raise VerifyingDoubleError(method_name,
+                                   target.doubled_obj).requires_instance()
 
 
 def verify_arguments(target, method_name, args, kwargs):
@@ -102,25 +97,22 @@ def verify_arguments(target, method_name, args, kwargs):
     attr = target.get_attr(method_name)
     method = attr.object
 
-    if attr.kind in ("data", "attribute", "toplevel", "class method", "static method"):
+    if attr.kind in (
+            "data",
+            "attribute",
+            "toplevel",
+            "class method",
+            "static method",
+    ):
         try:
-            method = method.__get__(None, attr.defining_class)
-            if SELF_OR_CLASS not in args:
-                # TODO: This seems like a hack
-                # Something changed between python 3.9 and 3.10 with how bind handles self/cls
-                try:
-                    sig = signature(method)
-                    if len(sig.parameters) != len(args) and (
-                        "cls" in sig.parameters or "self" in sig.parameters
-                    ):
-                        args = [SELF_OR_CLASS] + list(args)
-                except ValueError as e:
-                    raise VerifyingBuiltinDoubleArgumentError(str(e))
+            if isinstance(method, (classmethod, staticmethod)):
+                method = method.__get__(None, (attr.defining_class))
         except AttributeError:
             method = method.__call__
     elif attr.kind == "property":
         if args or kwargs:
-            raise VerifyingDoubleArgumentError("Properties do not accept arguments.")
+            raise VerifyingDoubleArgumentError(
+                "Properties do not accept arguments.")
         return
     else:
         args = [SELF_OR_CLASS] + list(args)
