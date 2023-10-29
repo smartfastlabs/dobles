@@ -6,9 +6,6 @@ dobles
 .. image:: https://badge.fury.io/py/dobles.svg
     :target: https://badge.fury.io/py/dobles
 
-.. image:: https://travis-ci.org/smartfastlabs/dobles.svg?branch=master
-    :target: https://travis-ci.org/smartfastlabs/dobles
-
 .. image:: https://readthedocs.org/projects/dobles/badge/?version=latest
     :target: https://dobles.readthedocs.io/en/latest/?badge=latest
 
