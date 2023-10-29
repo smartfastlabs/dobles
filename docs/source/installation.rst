@@ -8,6 +8,6 @@ From PyPI::
 
 From source::
 
-  $ git clone https://github.com/uber/dobles
+  $ git clone https://github.com/smartfastlabs/dobles
   $ cd dobles
   $ python setup.py install

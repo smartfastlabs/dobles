@@ -79,3 +79,9 @@ jobs:
         run: |
           source .venv/bin/activate
           pytest -s -p no:dobles test
+
+      - name: Generate Coverage Report
+        run: coveralls
+
+      - name: Coveralls
+        uses: coverallsapp/github-action@v2

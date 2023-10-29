@@ -4,7 +4,7 @@ dobles
 **Fork of https://www.github.com/uber/doubles with support for python 3.8+**
 
 .. image:: https://badge.fury.io/py/dobles.svg
-    :target: http://badge.fury.io/py/dobles
+    :target: https://badge.fury.io/py/dobles
 
 .. image:: https://travis-ci.org/smartfastlabs/dobles.svg?branch=master
     :target: https://travis-ci.org/smartfastlabs/dobles
