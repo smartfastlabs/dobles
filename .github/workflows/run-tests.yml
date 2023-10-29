@@ -81,7 +81,9 @@ jobs:
           pytest -s -p no:dobles test
 
       - name: Generate Coverage Report
-        run: coveralls
+        run: |
+          pip install coveralls
+          coveralls
 
       - name: Coveralls
         uses: coverallsapp/github-action@v2
