@@ -31,7 +31,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: [ "3.9", "3.10" , "3.11", "3.12"]
+        python-version: [ "3.9", "3.10" , "3.11", "3.12", "3.13" ]
     runs-on: ubuntu-latest
     steps:
       #----------------------------------------------
@@ -81,11 +81,9 @@ jobs:
           pytest -s -p no:dobles test
 
       - name: Generate Coverage Report
+        if: matrix.python-version == '3.13'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           pip install coveralls
           coveralls
-
-      - name: Coveralls
-        uses: coverallsapp/github-action@v2
