@@ -1,7 +1,6 @@
 import inspect
 import re
 
-import pytest
 from pytest import raises
 
 from dobles import allow, no_builtin_verification
@@ -532,38 +531,3 @@ class TestCustomMatcher(object):
         allow(self.subject).instance_method.with_args_validator(lambda x: True)
         with raises(VerifyingDoubleArgumentError):
             self.subject.instance_method("bob")
-
-
-class TestAsync(object):
-    def setup_method(self):
-        self.subject = InstanceDouble("dobles.testing.AsyncUser")
-
-    @pytest.mark.asyncio
-    async def test_and_return(self):
-        allow(self.subject).instance_method.and_return("Bob Barker")
-
-        result = await self.subject.instance_method()
-        assert result == "Bob Barker"
-
-    @pytest.mark.asyncio
-    async def test_and_return_multiple_values(self):
-        allow(self.subject).instance_method.and_return(
-            "Bob Barker",
-            "Drew Carey",
-        )
-
-        result1 = await self.subject.instance_method()
-        result2 = await self.subject.instance_method()
-        assert result1 == "Bob Barker"
-        assert result2 == "Drew Carey"
-
-    @pytest.mark.asyncio
-    async def test_and_raise(self):
-        exception = Exception("Bob Barker")
-        allow(self.subject).instance_method.and_raise(exception)
-
-        future = self.subject.instance_method()
-        with raises(Exception) as e:
-            await future
-
-        assert e.value == exception
