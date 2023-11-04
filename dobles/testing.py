@@ -18,12 +18,15 @@ class AsyncCallable:
         return self.value
 
 
+async def async_function():
+    return "dummy result"
+
+
 class AsyncUser:
     """An importable dummy class used for testing purposes."""
 
     class_attribute = "foo"
-    # TODO: HOW TO DO AN ASYNC LAMBDA
-    callable_class_attribute = classmethod(lambda cls: "dummy result")
+    callable_class_attribute = async_function
     arbitrary_callable = AsyncCallable("ArbitraryCallable Value")
 
     def __init__(self, name, age):
@@ -88,7 +91,7 @@ class User:
         self.callable_instance_attribute = lambda: "dummy result"
 
     @staticmethod
-    async def static_method(arg):
+    def static_method(arg):
         return "static_method return value: {}".format(arg)
 
     @classmethod
