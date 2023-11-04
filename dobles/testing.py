@@ -10,6 +10,71 @@ class ArbitraryCallable:
         return self.value
 
 
+class AsyncCallable:
+    def __init__(self, value):
+        self.value = value
+
+    def __call__(self):
+        return self.value
+
+
+class AsyncUser:
+    """An importable dummy class used for testing purposes."""
+
+    class_attribute = "foo"
+    # TODO: HOW TO DO AN ASYNC LAMBDA
+    callable_class_attribute = classmethod(lambda cls: "dummy result")
+    arbitrary_callable = AsyncCallable("ArbitraryCallable Value")
+
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+        self.callable_instance_attribute = lambda: "dummy result"
+
+    @staticmethod
+    async def static_method(arg):
+        return "static_method return value: {}".format(arg)
+
+    @classmethod
+    async def class_method(cls, arg):
+        return "class_method return value: {}".format(arg)
+
+    async def get_name(self):
+        return self.name
+
+    async def instance_method(self):
+        return "instance_method return value"
+
+    async def method_with_varargs(self, *args):
+        return "method_with_varargs return value"
+
+    async def method_with_default_args(self, foo, bar="baz"):
+        return "method_with_default_args return value"
+
+    async def method_with_varkwargs(self, **kwargs):
+        return "method_with_varkwargs return value"
+
+    async def method_with_positional_arguments(self, foo):
+        return "method_with_positional_arguments return value"
+
+    async def method_with_doc(self):
+        """A basic method of User to illustrate existence of a docstring"""
+        return
+
+    @property
+    async def some_property(self):
+        return "some_property return value"
+
+    async def __call__(self, *args):
+        return "user was called"
+
+    async def __enter__(self):
+        return self
+
+    async def __exit__(self, exc_type, exc_value, traceback):
+        pass
+
+
 class User:
     """An importable dummy class used for testing purposes."""
 
@@ -23,7 +88,7 @@ class User:
         self.callable_instance_attribute = lambda: "dummy result"
 
     @staticmethod
-    def static_method(arg):
+    async def static_method(arg):
         return "static_method return value: {}".format(arg)
 
     @classmethod

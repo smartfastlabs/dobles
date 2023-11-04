@@ -1,6 +1,5 @@
 import inspect
 import re
-import sys
 
 import pytest
 from pytest import raises
@@ -77,9 +76,6 @@ class TestBasicAllowance(object):
 
         assert subject.method_with_doc.__name__ == "method_with_doc"
 
-    @pytest.mark.skipif(
-        sys.version_info <= (3, 3), reason="requires Python 3.3 or higher"
-    )
     def test_proxies_can_be_inspected(self):
         subject = InstanceDouble("dobles.testing.User")
         allow(subject).instance_method
@@ -540,30 +536,34 @@ class TestCustomMatcher(object):
 
 class TestAsync(object):
     def setup_method(self):
-        self.subject = InstanceDouble("dobles.testing.User")
+        self.subject = InstanceDouble("dobles.testing.AsyncUser")
 
-    def test_and_return_future(self):
-        allow(self.subject).instance_method.and_return_future("Bob Barker")
+    @pytest.mark.asyncio
+    async def test_and_return(self):
+        allow(self.subject).instance_method.and_return("Bob Barker")
 
-        result = self.subject.instance_method()
-        assert result.result() == "Bob Barker"
+        result = await self.subject.instance_method()
+        assert result == "Bob Barker"
 
-    def test_and_return_future_multiple_values(self):
-        allow(self.subject).instance_method.and_return_future(
-            "Bob Barker", "Drew Carey"
+    @pytest.mark.asyncio
+    async def test_and_return_multiple_values(self):
+        allow(self.subject).instance_method.and_return(
+            "Bob Barker",
+            "Drew Carey",
         )
 
-        result1 = self.subject.instance_method()
-        result2 = self.subject.instance_method()
-        assert result1.result() == "Bob Barker"
-        assert result2.result() == "Drew Carey"
+        result1 = await self.subject.instance_method()
+        result2 = await self.subject.instance_method()
+        assert result1 == "Bob Barker"
+        assert result2 == "Drew Carey"
 
-    def test_and_raise_future(self):
+    @pytest.mark.asyncio
+    async def test_and_raise(self):
         exception = Exception("Bob Barker")
-        allow(self.subject).instance_method.and_raise_future(exception)
+        allow(self.subject).instance_method.and_raise(exception)
 
-        result = self.subject.instance_method()
+        future = self.subject.instance_method()
         with raises(Exception) as e:
-            result.result()
+            await future
 
         assert e.value == exception
