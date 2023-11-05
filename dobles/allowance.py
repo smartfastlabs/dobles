@@ -70,11 +70,9 @@ class Allowance(object):
         self._custom_matcher = None
         self._is_satisfied = True
         self._call_counter = CallCountAccumulator()
-        self._is_async = inspect.iscoroutinefunction(
-            target.get_attr(method_name).object
-        )
 
-        if self._is_async:
+        self.is_async: bool = target.is_attr_async(method_name)
+        if self.is_async:
             self._return_value = _async_return_value
         else:
             self._return_value = lambda *args, **kwargs: None
@@ -94,9 +92,7 @@ class Allowance(object):
         async def async_proxy_exception(*proxy_args, **proxy_kwargs):
             raise exception
 
-        self._return_value = (
-            async_proxy_exception if self._is_async else proxy_exception
-        )
+        self._return_value = async_proxy_exception if self.is_async else proxy_exception
         return self
 
     def and_return(self, *return_values):
@@ -131,11 +127,11 @@ class Allowance(object):
 
         if not check_func_takes_args(return_value):
             self._return_value = lambda *args, **kwargs: _maybe_async(
-                self._is_async,
+                self.is_async,
                 return_value(),
             )
         else:
-            self._return_value = _maybe_async(self._is_async, return_value)
+            self._return_value = _maybe_async(self.is_async, return_value)
 
         return self
 
