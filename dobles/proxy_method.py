@@ -13,6 +13,7 @@ def double_name(name):
 
 _ATTR_METHODS: Set[str] = {
     "__call__",
+    "__wrapped__",
     "__aenter__",
     "__aexit__",
     "__enter__",
