@@ -1,5 +1,6 @@
 from functools import wraps
 from inspect import isbuiltin
+from typing import Set
 
 from dobles.allowance import build_argument_repr_string
 from dobles.exceptions import UnallowedMethodCallError
@@ -8,6 +9,15 @@ from dobles.proxy_property import ProxyProperty
 
 def double_name(name):
     return "double_of_" + name
+
+
+_ATTR_METHODS: Set[str] = {
+    "__call__",
+    "__aenter__",
+    "__aexit__",
+    "__enter__",
+    "__exit__",
+}
 
 
 def _restore__new__(target, original_method):
@@ -122,7 +132,7 @@ class ProxyMethod(object):
             # TODO: Could there ever have been a value here that needs to be restored?
             del self._target.obj.__dict__[self._method_name]
 
-        if self._method_name in ["__call__", "__enter__", "__exit__"]:
+        if self._method_name in _ATTR_METHODS:
             self._target.restore_attr(self._method_name)
 
     def _capture_original_method(self):
@@ -145,7 +155,7 @@ class ProxyMethod(object):
         else:
             self._target.obj.__dict__[self._method_name] = self
 
-        if self._method_name in ["__call__", "__enter__", "__exit__"]:
+        if self._method_name in _ATTR_METHODS:
             self._target.hijack_attr(self._method_name)
 
     def _raise_exception(self, args, kwargs):

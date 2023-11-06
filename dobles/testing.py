@@ -67,10 +67,10 @@ class AsyncUser:
     async def __call__(self, *args):
         return "user was called"
 
-    async def __enter__(self):
+    async def __aenter__(self):
         return self
 
-    async def __exit__(self, exc_type, exc_value, traceback):
+    async def __aexit__(self, exc_type, exc_value, traceback):
         pass
 
 

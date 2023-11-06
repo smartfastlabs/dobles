@@ -118,70 +118,70 @@ class TestAsync__call__(object):
             await allow(user).__call__.with_args(1, 2, bob="barker")
 
 
-class TestAsync__enter__(object):
+class TestAsync__aenter__(object):
     # TODO: What do I need to do here
     @pytest.mark.asyncio
     async def test_basic_usage(self):
         user = AsyncUser("Alice", 25)
-        allow(user).__enter__.and_return(user)
+        allow(user).__aenter__.and_return(user)
 
-        with user as u:
-            assert (await user) == u
+        async with user as u:
+            assert user == u
 
     @pytest.mark.asyncio
     async def test_stubbing_two_objects_does_not_interfere(self):
         alice = AsyncUser("Alice", 25)
         bob = AsyncUser("Bob", 25)
 
-        allow(alice).__enter__.and_return("alice")
-        allow(bob).__enter__.and_return("bob")
+        allow(alice).__aenter__.and_return("alice")
+        allow(bob).__aenter__.and_return("bob")
 
-        with alice as a:
-            assert (await a) == "alice"
+        async with alice as a:
+            assert a == "alice"
 
-        with bob as b:
-            assert (await b) == "bob"
+        async with bob as b:
+            assert b == "bob"
 
     @pytest.mark.asyncio
     async def test_does_not_intefere_with_unstubbed_objects(self):
         alice = AsyncUser("Alice", 25)
         bob = AsyncUser("Bob", 25)
 
-        allow(alice).__enter__.and_return("user")
+        allow(alice).__aenter__.and_return("user")
 
-        with alice as a:
-            assert (await a) == "user"
+        async with alice as a:
+            assert a == "user"
 
-        with bob as b:
-            assert (await b) == bob
+        async with bob as b:
+            assert b == bob
 
     @pytest.mark.asyncio
     async def test_teardown_restores_previous_functionality(self):
         user = AsyncUser("Alice", 25)
-        allow(user).__enter__.and_return("bob barker")
+        allow(user).__aenter__.and_return("bob barker")
 
-        with user as u:
-            assert (await u) == "bob barker"
+        async with user as u:
+            assert u == "bob barker"
 
         teardown()
 
-        with user as u:
-            assert (await u) == user
+        async with user as u:
+            assert u == user
 
     @pytest.mark.asyncio
     async def test_raises_when_mocked_with_invalid_call_signature(self):
         user = AsyncUser("Alice", 25)
         with raises(VerifyingDoubleArgumentError):
-            allow(user).__enter__.with_args(1)
+            allow(user).__aenter__.with_args(1)
 
 
-class TestAsync__exit__(object):
+class TestAsync__aexit__(object):
     @pytest.mark.asyncio
     async def test_basic_usage(self):
         user = AsyncUser("Alice", 25)
-        allow(user).__exit__.with_args(None, None, None)
+        allow(user).__aexit__.with_args(None, None, None)
 
-        with user:
+        async with user:
             pass
 
     @pytest.mark.asyncio
@@ -189,38 +189,38 @@ class TestAsync__exit__(object):
         alice = AsyncUser("Alice", 25)
         bob = AsyncUser("Bob", 25)
 
-        allow(alice).__exit__.and_return("alice")
-        allow(bob).__exit__.and_return("bob")
+        allow(alice).__aexit__.and_return("alice")
+        allow(bob).__aexit__.and_return("bob")
 
-        assert (await alice.__exit__(None, None, None)) == "alice"
-        assert (await bob.__exit__(None, None, None)) == "bob"
+        assert (await alice.__aexit__(None, None, None)) == "alice"
+        assert (await bob.__aexit__(None, None, None)) == "bob"
 
     @pytest.mark.asyncio
     async def test_does_not_intefere_with_unstubbed_objects(self):
         alice = AsyncUser("Alice", 25)
         bob = AsyncUser("Bob", 25)
 
-        allow(alice).__exit__.and_return("user")
+        allow(alice).__aexit__.and_return("user")
 
-        assert (await alice.__exit__(None, None, None)) == "user"
-        assert (await bob.__exit__(None, None, None)) is None
+        assert (await alice.__aexit__(None, None, None)) == "user"
+        assert (await bob.__aexit__(None, None, None)) is None
 
     @pytest.mark.asyncio
     async def test_teardown_restores_previous_functionality(self):
         user = AsyncUser("Alice", 25)
-        allow(user).__exit__.and_return("bob barker")
+        allow(user).__aexit__.and_return("bob barker")
 
-        assert (await user.__exit__(None, None, None)) == "bob barker"
+        assert (await user.__aexit__(None, None, None)) == "bob barker"
 
         teardown()
 
-        assert (await user.__exit__(None, None, None)) is None
+        assert (await user.__aexit__(None, None, None)) is None
 
     @pytest.mark.asyncio
     async def test_raises_when_mocked_with_invalid_call_signature(self):
         user = AsyncUser("Alice", 25)
         with raises(VerifyingDoubleArgumentError):
-            allow(user).__exit__.with_no_args()
+            allow(user).__aexit__.with_no_args()
 
 
 class TestAsyncClassMethods(object):

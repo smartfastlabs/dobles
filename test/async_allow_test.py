@@ -247,8 +247,8 @@ class TestTwice(object):
 
         allow(subject).instance_method.twice()
 
-        subject.instance_method()
-        subject.instance_method()
+        await subject.instance_method()
+        await subject.instance_method()
         with raises(MockExpectationError) as e:
             await subject.instance_method()
         teardown()
@@ -277,7 +277,7 @@ class TestOnce(object):
 
         allow(subject).instance_method.once()
 
-        subject.instance_method()
+        await subject.instance_method()
         with raises(MockExpectationError) as e:
             await subject.instance_method()
         teardown()
@@ -377,7 +377,7 @@ class TestExactly(object):
 
         allow(subject).instance_method.exactly(1).times
 
-        subject.instance_method()
+        await subject.instance_method()
         with raises(MockExpectationError) as e:
             await subject.instance_method()
         teardown()
@@ -548,7 +548,7 @@ class TestCustomMatcher(object):
             lambda x: False
         )
         with raises(UnallowedMethodCallError):
-            self.subject.method_with_positional_arguments("Bob Barker")
+            await self.subject.method_with_positional_arguments("Bob Barker")
 
     @pytest.mark.asyncio
     async def test_matcher_with_kwargs_args_returns_false(self):
@@ -557,7 +557,7 @@ class TestCustomMatcher(object):
 
         allow(self.subject).instance_method.with_args_validator(func)
         with raises(UnallowedMethodCallError):
-            self.subject.instance_method()
+            await self.subject.instance_method()
 
     @pytest.mark.asyncio
     async def test_matcher_with_kwargs_args_returns_true(self):
@@ -565,7 +565,7 @@ class TestCustomMatcher(object):
             return True
 
         allow(self.subject).instance_method.with_args_validator(func).and_return("Bob")
-        self.subject.instance_method() == "Bob"
+        await self.subject.instance_method() == "Bob"
 
     @pytest.mark.asyncio
     async def test_matcher_with_positional_and_kwargs_returns_true(self):
@@ -575,7 +575,7 @@ class TestCustomMatcher(object):
         allow(self.subject).method_with_default_args.with_args_validator(
             func
         ).and_return("Bob")
-        self.subject.method_with_default_args("bob", bar="Barker") == "Bob"
+        await self.subject.method_with_default_args("bob", bar="Barker") == "Bob"
 
     @pytest.mark.asyncio
     async def test_matcher_with_positional_and_kwargs_returns_false(self):
@@ -586,10 +586,10 @@ class TestCustomMatcher(object):
             func
         ).and_return("Bob")
         with raises(UnallowedMethodCallError):
-            self.subject.method_with_default_args("bob", bar="Barker")
+            await self.subject.method_with_default_args("bob", bar="Barker")
 
     @pytest.mark.asyncio
     async def test_matcher_returns_true_but_args_do_not_match_call_signature(self):
         allow(self.subject).instance_method.with_args_validator(lambda x: True)
         with raises(VerifyingDoubleArgumentError):
-            self.subject.instance_method("bob")
+            await self.subject.instance_method("bob")
