@@ -169,14 +169,20 @@ class Target(object):
         return self.attrs.get(method_name) or self.get_callable_attr(method_name)
 
     def is_attr_async(self, name: str) -> bool:
-        object: Any = self.get_attr(name).object
+        attr: Any = self.get_attr(name)
+        object: Any = attr.object
         object = getattr(object, "_dobles_target_method", object)
 
         if iscoroutinefunction(object):
             return True
 
-        for i in ("__call__", "__wrapped__"):
-            if hasattr(object, i):
-                return iscoroutinefunction(getattr(object, i))
+        if isinstance(object, classmethod):
+            object = object.__get__(None, (attr.defining_class))
 
-        return False
+        else:
+            for i in ("__call__", "__wrapped__"):
+                if hasattr(object, i):
+                    object = getattr(object, i)
+                    break
+
+        return iscoroutinefunction(object)
