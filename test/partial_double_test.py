@@ -1,3 +1,5 @@
+from pytest import raises
+
 import dobles.testing
 from dobles import allow, no_builtin_verification
 from dobles.exceptions import (
@@ -7,7 +9,6 @@ from dobles.exceptions import (
 )
 from dobles.lifecycle import teardown
 from dobles.testing import User, UserWithCustomNew
-from pytest import raises
 
 
 class TestInstanceMethods(object):
