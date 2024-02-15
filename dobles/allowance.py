@@ -1,5 +1,6 @@
 import functools
 import inspect
+from typing import Any
 
 import dobles.lifecycle
 from dobles.call_count_accumulator import CallCountAccumulator
@@ -9,17 +10,26 @@ from dobles.verification import verify_arguments
 _any = object()
 
 
-def _get_future():
-    try:
-        from concurrent.futures import Future
-    except ImportError:
-        try:
-            from tornado.concurrent import Future
-        except ImportError:
-            raise ImportError(
-                "Error Importing Future, Could not find concurrent.futures or tornado.concurrent",
-            )
-    return Future()
+async def _async_return_value(*args, **kwargs):
+    return None
+
+
+def _maybe_async(is_async: bool, return_value: Any):
+    if is_async:
+        return make_it_async(return_value)
+    return return_value
+
+
+def make_it_async(
+    return_value=None,
+    exception=None,
+):
+    async def inner(*args, **kwargs):
+        if exception:
+            raise exception
+        return return_value
+
+    return inner()
 
 
 def verify_count_is_non_negative(func):
@@ -61,7 +71,11 @@ class Allowance(object):
         self._is_satisfied = True
         self._call_counter = CallCountAccumulator()
 
-        self._return_value = lambda *args, **kwargs: None
+        self.is_async: bool = target.is_attr_async(method_name)
+        if self.is_async:
+            self._return_value = _async_return_value
+        else:
+            self._return_value = lambda *args, **kwargs: None
 
     def and_raise(self, exception, *args, **kwargs):
         """Causes the double to raise the provided exception when called.
@@ -75,29 +89,11 @@ class Allowance(object):
         def proxy_exception(*proxy_args, **proxy_kwargs):
             raise exception
 
-        self._return_value = proxy_exception
+        async def async_proxy_exception(*proxy_args, **proxy_kwargs):
+            raise exception
+
+        self._return_value = async_proxy_exception if self.is_async else proxy_exception
         return self
-
-    def and_raise_future(self, exception):
-        """Similar to `and_raise` but the doubled method returns a future.
-
-        :param Exception exception: The exception to raise.
-        """
-        future = _get_future()
-        future.set_exception(exception)
-        return self.and_return(future)
-
-    def and_return_future(self, *return_values):
-        """Similar to `and_return` but the doubled method returns a future.
-
-        :param object return_values: The values the double will return when called,
-        """
-        futures = []
-        for value in return_values:
-            future = _get_future()
-            future.set_result(value)
-            futures.append(future)
-        return self.and_return(*futures)
 
     def and_return(self, *return_values):
         """Set a return value for an allowance
@@ -128,10 +124,14 @@ class Allowance(object):
         :param return_value: A callable that will be invoked to determine the double's return value.
         :type return_value: any callable object
         """
+
         if not check_func_takes_args(return_value):
-            self._return_value = lambda *args, **kwargs: return_value()
+            self._return_value = lambda *args, **kwargs: _maybe_async(
+                self.is_async,
+                return_value(),
+            )
         else:
-            self._return_value = return_value
+            self._return_value = _maybe_async(self.is_async, return_value)
 
         return self
 

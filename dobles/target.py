@@ -1,5 +1,12 @@
 from collections import namedtuple
-from inspect import classify_class_attrs, getmembers, isclass, ismodule
+from inspect import (
+    classify_class_attrs,
+    getmembers,
+    isclass,
+    iscoroutinefunction,
+    ismodule,
+)
+from typing import Any
 
 from dobles.object_double import ObjectDouble
 from dobles.verification import is_callable
@@ -160,3 +167,22 @@ class Target(object):
     def get_attr(self, method_name):
         """Get attribute from the target object"""
         return self.attrs.get(method_name) or self.get_callable_attr(method_name)
+
+    def is_attr_async(self, name: str) -> bool:
+        attr: Any = self.get_attr(name)
+        object: Any = attr.object
+        object = getattr(object, "_dobles_target_method", object)
+
+        if iscoroutinefunction(object):
+            return True
+
+        if isinstance(object, classmethod):
+            object = object.__get__(None, (attr.defining_class))
+
+        else:
+            for i in ("__call__", "__wrapped__"):
+                if hasattr(object, i):
+                    object = getattr(object, i)
+                    break
+
+        return iscoroutinefunction(object)
