@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "dobles"
-version = "3.0.0"
+version = "4.0.0"
 description = "Test dobles for Python."
 authors = ["Jimmy Cuadra <jimmy@uber.com>", "Todd Sifleet <todd@smartfast.com>"]
 maintainers = ["Todd Sifleet <todd@smartfast.com>"]
