@@ -477,38 +477,37 @@ The return value of ``allow_constructor`` and ``expect_constructor`` support all
 Stubbing Asynchronous Methods
 -----------------------------
 
-Stubbing asynchronous methods requires returning futures ``and_return_future`` and ``and_raise_future`` do it for you.
+Stubbing asynchronous methods is handled automatically by ``and_return`` and ``and_raise``.
 
 
 Returning Values
 ++++++++++++++++
 
-Stubbing a method with ``and_return_future`` is similar to using ``and_return``, except the value is wrapped in a ``Future``::
+Stubbing an async method with ``and_return`` will automatically wrap the result in an awaitable::
 
     from dobles import allow, InstanceDouble
 
-    def test_and_return_future():
+    async def test_and_return_future():
         user = InstanceDouble('dobles.testing.User')
-        allow(user).instance_method.and_return_future('Bob Barker')
+        allow(user).instance_method.and_return('Bob Barker')
 
-        result = user.instance_method()
-        assert result.result() == 'Bob Barker'
+        result = await user.instance_method()
+        assert result == 'Bob Barker'
 
 Raising Exceptions
 ++++++++++++++++++
 
-Stubbing a method with ``and_raise_future`` is similar to using ``and_raise``, except the exceptions is wrapped in a ``Future``::
+Stubbing a method with ``and_raise`` will automatically wrap the exception in an awaitable::
 
     from dobles import allow, InstanceDouble
     from pytest import raises
 
-    def test_and_raise_future():
+    async def test_and_raise_future():
         user = InstanceDouble('dobles.testing.User')
         exception = Exception('Bob Barker')
-        allow(user).instance_method.and_raise_future(exception)
-        result = user.instance_method()
+        allow(user).instance_method.and_raise(exception)
 
         with raises(Exception) as e:
-            result.result()
+            await user.instance_method()
 
         assert e.value == exception
