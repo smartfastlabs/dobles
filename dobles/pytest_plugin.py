@@ -9,6 +9,9 @@ def pytest_runtest_call(item):
 
     try:
         outcome.get_result()
-        verify()
+        try:
+            verify()
+        except Exception as e:
+            outcome.force_exception(e)
     finally:
         teardown()
