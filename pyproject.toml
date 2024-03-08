@@ -46,7 +46,7 @@ optional = true
 
 [tool.poetry.group.test.dependencies]
 pytest-asyncio = "*"
-pytest = "*"
+pytest = "8.0.2"
 coverage = "*"
 coveralls = "*"
 
