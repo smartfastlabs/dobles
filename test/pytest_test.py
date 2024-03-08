@@ -18,7 +18,7 @@ def test_exceptions_dont_cause_leaking_between_tests(pytester):
             return "Bob Barker"
 
         def test_that_should_pass(user):
-            assert False
+            assert True
 
     """
     )
