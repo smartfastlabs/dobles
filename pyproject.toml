@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "dobles"
-version = "4.0.1"
+version = "4.0.2"
 description = "Test dobles for Python."
 authors = ["Jimmy Cuadra <jimmy@uber.com>", "Todd Sifleet <todd@smartfast.com>"]
 maintainers = ["Todd Sifleet <todd@smartfast.com>"]
@@ -46,7 +46,7 @@ optional = true
 
 [tool.poetry.group.test.dependencies]
 pytest-asyncio = "*"
-pytest = "*"
+pytest = "8.0.2"
 coverage = "*"
 coveralls = "*"
 

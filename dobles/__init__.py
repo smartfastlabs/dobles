@@ -1,4 +1,4 @@
-__version__ = "2.0.0"
+__version__ = "4.0.2"
 
 from dobles.class_double import ClassDouble  # noqa
 from dobles.instance_double import InstanceDouble  # noqa
