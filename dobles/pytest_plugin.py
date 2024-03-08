@@ -7,13 +7,9 @@ from dobles.lifecycle import teardown, verify
 def pytest_runtest_call(item):
     try:
         outcome = yield
-    except Exception as e:
-        raise e
     finally:
         try:
             verify()
-        except Exception as e:
-            raise e
         finally:
             teardown()
 
