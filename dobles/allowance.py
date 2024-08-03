@@ -27,9 +27,9 @@ def make_it_async(
     async def inner(*args, **kwargs):
         if exception:
             raise exception
-        return return_value
+        return return_value(*args, **kwargs)
 
-    return inner()
+    return inner
 
 
 def verify_count_is_non_negative(func):
@@ -114,7 +114,9 @@ class Allowance(object):
         final_value = return_values.pop()
 
         self.and_return_result_of(
-            lambda: return_values.pop(0) if return_values else final_value
+            lambda *args, **kwargs: (
+                return_values.pop(0) if return_values else final_value
+            )
         )
         return self
 
@@ -125,13 +127,7 @@ class Allowance(object):
         :type return_value: any callable object
         """
 
-        if not check_func_takes_args(return_value):
-            self._return_value = lambda *args, **kwargs: _maybe_async(
-                self.is_async,
-                return_value(),
-            )
-        else:
-            self._return_value = _maybe_async(self.is_async, return_value)
+        self._return_value = _maybe_async(self.is_async, return_value)
 
         return self
 
