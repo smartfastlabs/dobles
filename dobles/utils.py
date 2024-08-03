@@ -39,3 +39,20 @@ def get_path_components(path):
     class_name = path_segments[-1]
 
     return module_path, class_name
+
+
+def get_target(path):
+    """Get an object by path
+
+    :param str path: The full path to the objectthat will be targeted.
+    :return: The class that will be doubled.
+    :rtype: type
+    :raise: ``VerifyingDoubleImportError`` if the target object doesn't exist or isn't.
+    """
+
+    module_path, class_name = get_path_components(path)
+    module = get_module(module_path, path)
+    try:
+        return getattr(module, class_name)
+    except AttributeError:
+        raise VerifyingDoubleImportError("No object at path: {}.".format(path))

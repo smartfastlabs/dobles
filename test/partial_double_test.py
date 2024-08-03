@@ -271,7 +271,9 @@ class Test__exit__(object):
 
 class TestClassMethods(object):
     def test_stubs_class_methods(self):
-        allow(User).class_method.with_args("foo").and_return("overridden value")
+        allow("dobles.testing.User").class_method.with_args("foo").and_return(
+            "overridden value"
+        )
 
         assert User.class_method("foo") == "overridden value"
 
@@ -336,7 +338,7 @@ class TestCustomConstructorMethods(object):
 
 class TestTopLevelFunctions(object):
     def test_stubs_method(self):
-        allow(dobles.testing).top_level_function.and_return("foo")
+        allow("dobles.testing").top_level_function.and_return("foo")
 
         assert dobles.testing.top_level_function("bob barker") == "foo"
 
