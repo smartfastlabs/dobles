@@ -3,6 +3,7 @@ import inspect
 from dobles.class_double import ClassDouble
 from dobles.exceptions import ConstructorDoubleError
 from dobles.lifecycle import current_space
+from dobles.utils import get_target
 
 
 def expect(target):
@@ -45,8 +46,11 @@ class ExpectationTarget(object):
 
     def __init__(self, target):
         """
-        :param object target: The object to wrap.
+        :param Union[str, object] target: The object to wrap.
         """
+
+        if isinstance(target, str):
+            target = get_target(target)
 
         self._proxy = current_space().proxy_for(target)
 
