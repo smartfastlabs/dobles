@@ -16,7 +16,17 @@ class TestAsyncInstanceMethods(object):
     @pytest.mark.asyncio
     async def test_arbitrary_callable_on_instance(self):
         instance = AsyncUser("Bob", 10)
-        allow(instance).arbitrary_callable.and_return("Bob Barker")
+        allow(instance).arbitrary_callable.and_return("Bob Barker", "Drew Carey")
+        assert (await instance.arbitrary_callable()) == "Bob Barker"
+        assert (await instance.arbitrary_callable()) == "Drew Carey"
+        assert (await instance.arbitrary_callable()) == "Drew Carey"
+        teardown()
+        assert (await instance.arbitrary_callable()) == "ArbitraryCallable Value"
+
+    @pytest.mark.asyncio
+    async def test_arbitrary_callable_on_instance_and_return_result(self):
+        instance = AsyncUser("Bob", 10)
+        allow(instance).arbitrary_callable.and_return_result_of(lambda *_: "Bob Barker")
         assert (await instance.arbitrary_callable()) == "Bob Barker"
         teardown()
         assert (await instance.arbitrary_callable()) == "ArbitraryCallable Value"
