@@ -185,4 +185,6 @@ class Target(object):
                     object = getattr(object, i)
                     break
 
-        return iscoroutinefunction(object)
+        if iscoroutinefunction(object):
+            return True
+

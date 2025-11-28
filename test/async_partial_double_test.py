@@ -185,6 +185,13 @@ class TestAsync__aenter__(object):
             allow(user).__aenter__.with_args(1)
 
 
+class TestFakeAwaitable(object):
+    @pytest.mark.asyncio
+    async def test_fake_awaitable(self):
+        allow(dobles.testing).fake_async_function().and_return("house")
+        assert (await dobles.testing.fake_async_function()) == "house"
+
+
 class TestAsync__aexit__(object):
     @pytest.mark.asyncio
     async def test_basic_usage(self):
