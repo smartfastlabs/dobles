@@ -1,11 +1,11 @@
 .PHONY: test
 test: clean lint
-	@py.test -s -p no:dobles test
+	poetry run py.test -s -p no:dobles test
 
 .PHONY: lint
 lint:
-	@flake8 --extend-ignore E501 dobles test
-	@black . 
+	poetry run flake8 --extend-ignore E501 dobles test
+	poetry run black .
 
 .PHONY: clean
 clean:

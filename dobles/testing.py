@@ -174,6 +174,15 @@ class AsyncCallable(object):
         return arg1
 
 
+class Awaitable(object):
+    def __await__(self):
+        return self
+
+
+def fake_async_function() -> Awaitable:
+    return Awaitable()
+
+
 def return_callable(func):
     return Callable()
 
